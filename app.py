@@ -21,9 +21,8 @@ app.secret_key = os.urandom(24)  # For session management
 def get_weather_data():
     try:
         # Setup
-        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-        creds = ServiceAccountCredentials.from_json_keyfile_name('weather-station-460903-b0b8c0a316c2.json', scope)
         client = gspread.authorize(creds)
+
 
         # Open the sheet
         sheet = client.open("filtered sensor data").sheet1
