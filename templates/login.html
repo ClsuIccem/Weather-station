@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ICCFM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-page">
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/iccem-logo.png') }}" alt="ICCFM">
+        </div>
+        <nav>
+            <a href="/">MONITORING AND FORECASTING</a>
+            <a href="/sensor">WEATHER SENSOR</a>
+            <a href="/request">REQUEST WEATHER DATA</a>
+        </nav>
+        <div class="user-profile">
+            <img src="{{ url_for('static', filename='images/profile.svg') }}" alt="Profile">
+        </div>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit" class="login-btn">LOG IN</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const formData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        window.location.href = '/';  // Redirect to home page after successful login
+                    } else {
+                        alert('Invalid username or password');
+                    }
+                } else {
+                    alert('Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Login failed. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

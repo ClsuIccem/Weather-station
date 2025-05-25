@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Weather Data - ICCFM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/iccem-logo.png') }}" alt="ICCFM">
+        </div>
+        <nav>
+            <a href="/">MONITORING AND FORECASTING</a>
+            <a href="/sensor">WEATHER SENSOR</a>
+            <a href="/request" class="active">REQUEST WEATHER DATA</a>
+        </nav>
+        <div class="user-profile {% if logged_in %}logged-in{% endif %}" onclick="handleProfileClick()">
+            <img src="{{ url_for('static', filename='images/profile.svg') }}" alt="Profile">
+        </div>
+    </header>
+
+    <main>
+        <div class="request-content">
+            <h1>Request Weather Data</h1>
+            
+            <div class="request-container">
+                <div class="info-section">
+                    <p class="info-text">
+                        This weather monitoring and forecasting system is made available 
+                        by the Institute for Climate Change and Environmental Management 
+                        (ICCEM).
+                    </p>
+                    
+                    <p class="info-text">
+                        Our weather data is collected using weather sensors installed 
+                        within the Central Luzon State University campus to provide you 
+                        with accurate and up-to-date information for your research or 
+                        weather monitoring needs.
+                    </p>
+
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="far fa-clock"></i>
+                            <span>Office Hours: 8:00AM - 5:00 PM</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="far fa-envelope"></i>
+                            <span>iccem@clsu.edu.ph</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-facebook"></i>
+                            <span>facebook.com/ICCEMCLSU/</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <span>https://iccem.clsu.edu.ph</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Central Luzon State University (CLSU),<br>Science City of Muñoz, Nueva Ecija</span>
+                        </div>
+                    </div>
+                </div>
+
+               
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

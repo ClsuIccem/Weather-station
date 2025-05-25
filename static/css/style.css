@@ -1,0 +1,598 @@
+:root {
+    --primary-color: #004D2A;
+    --secondary-color: #4CAF50;
+    --background-color: #F5F5E6;
+    --card-background: #ffffff;
+    --text-color: #006838;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+}
+
+header {
+    background-color: var(--primary-color);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo img {
+    height: 40px;
+}
+
+nav {
+    display: flex;
+    gap: 2rem;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+}
+
+nav a.active {
+    background-color: var(--secondary-color);
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+}
+
+.user-profile:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.user-profile img {
+    width: 24px;
+    height: 24px;
+}
+
+.user-profile::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--secondary-color);
+    border: 2px solid var(--primary-color);
+    display: none;
+}
+
+.user-profile.logged-in::after {
+    display: block;
+}
+
+main {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 2rem;
+    align-items: start;
+}
+
+.left-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.current-conditions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    
+}
+
+.weather-card {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.weather-card h2 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.last-updated {
+    text-align: left;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10px;
+}
+
+.dtvalue {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--text-color);
+    line-height: 1;
+}
+
+.value {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: var(--text-color);
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.measurement-icon {
+    width: 32px;
+    height: 32px;
+}
+
+.unit {
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+.forecast-section {
+    background-color: var(--secondary-color);
+    padding: 2rem;
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+.forecast-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.hourly-forecast {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+}
+
+.forecast-hour {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+}
+
+.forecast-hour .time {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.forecast-hour .weather-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0.5rem 0;
+}
+
+.forecast-hour .weather-icon img {
+    width: 100%;
+    height: 100%;
+}
+
+.forecast-hour .temp {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.weekly-forecast {
+    background-color: var(--secondary-color);
+    padding: 1.5rem;
+    border-radius: 10px;
+    color: white;
+}
+
+.forecast-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.weekly-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.day-forecast {
+    display: grid;
+    grid-template-columns: 100px auto 100px auto;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    gap: 0.5rem;
+}
+
+.day-forecast:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+.day-forecast .day {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.day-forecast .weather-icon {
+    width: 24px;
+    height: 24px;
+    justify-self: center;
+}
+
+.day-forecast .weather-icon img {
+    width: 100%;
+    height: 100%;
+    filter: brightness(0) invert(1);
+}
+
+.day-forecast .temp-range {
+    font-size: 1rem;
+    text-align: right;
+}
+
+.day-forecast .date {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    text-align: right;
+}
+
+/* Sensor page styles */
+.sensor-content {
+    background-color: var(--card-background);
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sensor-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tab-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #f0f0f0;
+    color: var(--text-color);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.tab-btn.active {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.chart-container {
+    width: 100%;
+    height: 500px;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+/* Request weather data page styles */
+.request-content {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.request-content h1 {
+    color: var(--text-color);
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.request-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    background-color: var(--card-background);
+    padding: 5rem;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.info-section {
+    color: var(--text-color);
+    text-align: center;
+}
+
+.info-text {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.contact-info {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.contact-item i {
+    width: 20px;
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+.request-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1rem;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+/* Login page styles */
+.login-page {
+    background-color: var(--background-color);
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px);
+    padding: 2rem;
+}
+
+.login-form {
+    background-color: var(--secondary-color);
+    padding: 3rem;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-form h2 {
+    color: white;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.login-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.login-form label {
+    display: block;
+    color: white;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.login-form input:focus {
+    outline: 2px solid var(--primary-color);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #003d21;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    nav {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    nav a {
+        width: 100%;
+        text-align: left;
+    }
+
+    .main-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .current-conditions {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .forecast-section .hourly-forecast {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .weekly-forecast .day-forecast {
+        grid-template-columns: 1fr 1fr;
+        text-align: left;
+    }
+
+    .left-content {
+        gap: 1.5rem;
+    }
+
+    .forecast-hour .weather-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .weather-card .value {
+        font-size: 2.5rem;
+    }
+
+    .request-container {
+        padding: 2rem;
+    }
+
+    .login-form {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .current-conditions {
+        grid-template-columns: 1fr;
+    }
+
+    .forecast-section .hourly-forecast {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .weekly-forecast .day-forecast {
+        grid-template-columns: 1fr;
+    }
+
+    .weather-card {
+        padding: 1rem;
+    }
+
+    .forecast-hour .temp {
+        font-size: 1.2rem;
+    }
+
+    .weather-card .value {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .forecast-section,
+    .weekly-forecast {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}

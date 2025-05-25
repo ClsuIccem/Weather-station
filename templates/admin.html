@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ICCFM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/iccem-logo.png') }}" alt="ICCFM">
+        </div>
+        <nav>
+            <a href="/">MONITORING AND FORECASTING</a>
+            <a href="/sensor">WEATHER SENSOR</a>
+            <a href="/request">REQUEST WEATHER DATA</a>
+            <a href="/admin" class="active">ADMIN DASHBOARD</a>
+        </nav>
+        <div class="user-profile">
+            <img src="{{ url_for('static', filename='images/profile.svg') }}" alt="Profile">
+            <a href="/logout" class="logout-btn">LOG OUT</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="admin-container">
+            <div class="admin-header">
+                <h1>LOCALIZED WEATHER MONITORING AND FORECASTING SYSTEM</h1>
+                <div class="admin-actions">
+                    <button class="admin-btn" onclick="downloadWeatherData()">DOWNLOAD WEATHER DATA</button>
+                    <button class="admin-btn" onclick="downloadForecast()">DOWNLOAD WEATHER FORECAST</button>
+                </div>
+            </div>
+
+            <div class="forecast-section">
+                <h2>TODAY'S FORECAST</h2>
+                <div class="location">
+                    <img src="{{ url_for('static', filename='images/location.svg') }}" alt="Location">
+                    <span>Central Luzon State University (CLSU), Science City of Muñoz, Nueva Ecija</span>
+                </div>
+
+                <div class="forecast-grid">
+                    <div class="am-forecast">
+                        <h3>AM</h3>
+                        <div class="forecast-hours">
+                            {% for hour in range(12) %}
+                            <div class="hour-forecast">
+                                <span class="time">{{ "%02d"|format(hour) }}:00</span>
+                                <img src="{{ url_for('static', filename='images/partly-cloudy.svg') }}" alt="Weather">
+                                <span class="temp">{{ weather.temperature }}°</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="pm-forecast">
+                        <h3>PM</h3>
+                        <div class="forecast-hours">
+                            {% for hour in range(12) %}
+                            <div class="hour-forecast">
+                                <span class="time">{{ "%02d"|format(hour) }}:00</span>
+                                <img src="{{ url_for('static', filename='images/cloudy.svg') }}" alt="Weather">
+                                <span class="temp">{{ weather.temperature }}°</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weekly-forecast">
+                <h2>7-DAY FORECAST</h2>
+                <div class="weekly-grid">
+                    {% for day in weekly %}
+                    <div class="day-forecast">
+                        <span class="day">{{ day.day }}</span>
+                        <img src="{{ url_for('static', filename='images/cloudy.svg') }}" alt="Weather">
+                        <span class="temp-range">{{ day.low }}°/{{ day.high }}°</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="admin-controls">
+                <div class="data-management">
+                    <h3>Data Management</h3>
+                    <button onclick="manageWeatherData()">Manage Weather Data</button>
+                    <button onclick="manageForecastData()">Manage Forecast Data</button>
+                    <button onclick="manageUserAccess()">Manage User Access</button>
+                </div>
+                
+                <div class="system-settings">
+                    <h3>System Settings</h3>
+                    <button onclick="updateLocation()">Update Location Settings</button>
+                    <button onclick="configureAlerts()">Configure Alert Settings</button>
+                    <button onclick="systemMaintenance()">System Maintenance</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function downloadWeatherData() {
+            // Implement weather data download
+            alert('Downloading weather data...');
+        }
+
+        function downloadForecast() {
+            // Implement forecast download
+            alert('Downloading weather forecast...');
+        }
+
+        function manageWeatherData() {
+            // Implement weather data management
+            alert('Opening weather data management...');
+        }
+
+        function manageForecastData() {
+            // Implement forecast data management
+            alert('Opening forecast data management...');
+        }
+
+        function manageUserAccess() {
+            // Implement user access management
+            alert('Opening user access management...');
+        }
+
+        function updateLocation() {
+            // Implement location settings update
+            alert('Opening location settings...');
+        }
+
+        function configureAlerts() {
+            // Implement alert configuration
+            alert('Opening alert settings...');
+        }
+
+        function systemMaintenance() {
+            // Implement system maintenance
+            alert('Opening system maintenance...');
+        }
+    </script>
+</body>
+</html>

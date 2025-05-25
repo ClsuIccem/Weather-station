@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Monitoring System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/iccem-logo.png') }}" alt="ICCFM">
+        </div>
+        <nav>
+            <a href="/" class="active">MONITORING AND FORECASTING</a>
+            <a href="/sensor">WEATHER SENSOR</a>
+            <a href="/request">REQUEST WEATHER DATA</a>
+        </nav>
+        <!--<div class="user-profile {% if logged_in %}logged-in{% endif %}" onclick=">handleProfileClick()"
+            <img src="{{ url_for('static', filename='images/profile.svg') }}" alt="Profile">
+        </div>--> <!--admin button hidden-->
+    </header>
+
+    <main>
+        <div class="main-content">
+            <div class="left-content">
+                <div class="current-conditions">
+                    <div class="weather-card">
+                        <h2>Air<br/>Temperature</h2>
+                        <div class="value">
+                            <span class="number">{{ weather.temperature }}</span>°
+                        </div>
+                        <div class="icon-container">
+                            <img src="{{ url_for('static', filename='images/temperature.svg') }}" alt="Temperature" class="measurement-icon">
+                            <span class="unit">celsius</span>
+                        </div>
+                    </div>
+
+                    <div class="weather-card">
+                        <h2>Relative<br/>Humidity</h2>
+                        <div class="value">
+                            <span class="number">{{ weather.humidity }}</span>
+                        </div>
+                        <div class="icon-container">
+                            <img src="{{ url_for('static', filename='images/humidity.svg') }}" alt="Humidity" class="measurement-icon">
+                            <span class="unit">%</span>
+                        </div>
+                    </div>
+
+                    <div class="weather-card">
+                        <h2>Barometric<br/>Pressure</h2>
+                        <div class="value">
+                            <span class="number">{{ weather.pressure }}</span>
+                        </div>
+                        <div class="icon-container">
+                            <img src="{{ url_for('static', filename='images/pressure.svg') }}" alt="Pressure" class="measurement-icon">
+                            <span class="unit">mb</span>
+                        </div>
+                    </div>
+
+                    <div class="weather-card">
+                        <h2>Heat<br/>Index</h2>
+                        <div class="value">
+                            <span class="number">{{ weather.hindex }}</span>°
+                        </div>
+                        <div class="icon-container">
+                            <img src="{{ url_for('static', filename='images/temperature.svg') }}" alt="Temperature" class="measurement-icon">
+                            <span class="unit">celsius</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="last-updated">
+                        <h2>Last updated:</h2>
+                        <div class="dtvalue">
+                            <span class="number">{{ weather.datetime }}</span>
+                        </div>
+                    </div>
+
+                <div class="forecast-section">
+                    <h2>TODAY'S FORECAST</h2>
+                    <div class="hourly-forecast">
+                        {% for hour in forecast %}
+                        <div class="forecast-hour">
+                            <div class="time">{{ hour.time }}</div>
+                            <div class="weather-icon">
+                                <img src="{{ url_for('static', filename='images/' + hour.condition + '.svg') }}" alt="{{ hour.condition }}">
+                            </div>
+                            <div class="temp">{{ hour.temperature }}°</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="weekly-forecast">
+                <div class="forecast-title">7-DAY FORECAST</div>
+                <div class="weekly-list">
+                    {% for day in weekly %}
+                    <div class="day-forecast">
+                        <div class="day">{{ day.day }}</div>
+                        <div class="weather-icon">
+                            <img src="{{ url_for('static', filename='images/' + day.condition + '.svg') }}" alt="{{ day.condition }}">
+                        </div>
+                        <div class="temp-range">{{ day.low }}° - {{ day.high }}°</div>
+                        <div class="date">{{ day.date }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function handleProfileClick() {
+            {% if logged_in %}
+                window.location.href = '/logout';
+            {% else %}
+                window.location.href = '/login';
+            {% endif %}
+        }
+    </script>
+
+    <script>
+    setTimeout(() => {
+        window.location.reload();
+    }, 60000); // 60000ms = 60 seconds
+    </script>
+
+</body>
+</html>

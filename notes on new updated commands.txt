@@ -1,0 +1,7 @@
+auto-reload
+pip install livereload
+
+
+raspi shell executable
+chmod +x /home/pi/start_dht11.sh (run only once)
+open shell executable

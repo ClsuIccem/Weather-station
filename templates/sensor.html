@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Sensor - ICCFM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/iccem-logo.png') }}" alt="ICCFM">
+        </div>
+        <nav>
+            <a href="/">MONITORING AND FORECASTING</a>
+            <a href="/sensor" class="active">WEATHER SENSOR</a>
+            <a href="/request">REQUEST WEATHER DATA</a>
+        </nav>
+        <div class="user-profile {% if logged_in %}logged-in{% endif %}" onclick="handleProfileClick()">
+            <img src="{{ url_for('static', filename='images/profile.svg') }}" alt="Profile">
+        </div>
+    </header>
+
+    <main>
+        <div class="sensor-content">
+            <div class="sensor-tabs">
+                <button class="tab-btn active" data-param="temperature">Air Temperature</button>
+                <button class="tab-btn" data-param="humidity">Rel. Humidity</button>
+                <button class="tab-btn" data-param="pressure">Barometric Pres.</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="weatherChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Sample data - this will be replaced with real data from the backend
+        const ctx = document.getElementById('weatherChart').getContext('2d');
+        let weatherChart;
+
+        function createChart(data) {
+            if (weatherChart) {
+                weatherChart.destroy();
+            }
+
+            weatherChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: data.parameter,
+                        data: data.values,
+                        borderColor: '#006838',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: false,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: '#e0e0e0'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: '#e0e0e0'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to fetch data from the server
+        async function fetchSensorData(parameter = 'temperature') {
+            try {
+                const response = await fetch(`/api/sensor-data/${parameter}`);
+                const data = await response.json();
+                createChart(data);
+            } catch (error) {
+                console.error('Error fetching sensor data:', error);
+            }
+        }
+
+        // Add click event listeners to tabs
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                // Update active state
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // Fetch new data
+                fetchSensorData(e.target.dataset.param);
+            });
+        });
+
+        // Initial load
+        fetchSensorData('temperature');
+    </script>
+
+    <script>
+        function handleProfileClick() {
+            {% if logged_in %}
+                window.location.href = '/logout';
+            {% else %}
+                window.location.href = '/login';
+            {% endif %}
+        }
+    </script>
+</body>
+</html>
