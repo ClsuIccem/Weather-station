@@ -5,7 +5,8 @@ import os
 import json
 import google.auth
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2 import service_account
+
 
 
 # Load credentials from environment variable
