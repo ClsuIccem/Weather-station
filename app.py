@@ -12,20 +12,19 @@ from googleapiclient.discovery import build
 # Define scopes required for Sheets API access (READ ONLY)
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
-# Decode base64 credentials and initialize Google service credentials
+# Load credentials from JSON file directly
 try:
-    creds_b64 = os.environ.get('GOOGLE_CREDENTIALS_B64')
-    print(f"✅ GOOGLE_CREDENTIALS_B64 present? {creds_b64 is not None}")
-    if not creds_b64:
-        raise Exception("Missing GOOGLE_CREDENTIALS_B64 environment variable")
-    
-    creds_json = base64.b64decode(creds_b64).decode('utf-8')
-    creds_dict = json.loads(creds_json)
-    creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
-    print("✅ Google credentials loaded successfully.")
+    CREDENTIALS_FILE = 'weather-station-460903-b0b8c0a316c2.json'
+    creds = service_account.Credentials.from_service_account_file(
+        CREDENTIALS_FILE,
+        scopes=SCOPES
+    )
+    print("✅ Google credentials loaded from file.")
 except Exception as e:
-    print(f"❌ Failed to load credentials: {e}")
+    print(f"❌ Failed to load credentials from file: {e}")
     creds = None
+
+
 
 
 app = Flask(__name__)
