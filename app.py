@@ -6,6 +6,7 @@ import json
 import gspread
 from google.oauth2 import service_account
 import base64
+from googleapiclient.discovery import build
 
 
 # Define scopes required for Sheets API access (READ ONLY)
