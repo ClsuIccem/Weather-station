@@ -14,7 +14,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # Load credentials from JSON file directly
 try:
-    CREDENTIALS_FILE = '/etc/secrets/weather-station-460903-972c4edd86f6'
+    CREDENTIALS_FILE = '/etc/secrets/weather-station-460903-972c4edd86f6.json'
     creds = service_account.Credentials.from_service_account_file(
         CREDENTIALS_FILE,
         scopes=SCOPES
