@@ -609,35 +609,48 @@ main {
 }
 @media (max-width: 480px) {
     .request-container {
-        padding: 1.5rem;
-        gap: 2rem;
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .request-content h1 {
+        font-size: 1.4rem;
+        text-align: center;
+        padding: 0 0.5rem;
     }
 
     .info-text {
-        font-size: 0.95rem;
-        line-height: 1.5;
-        padding: 0 1rem;
-        text-align: justify;
+        font-size: 1rem;
+        padding: 0 0.5rem;
+        text-align: left;
+        max-width: 100%;
     }
 
     .contact-info {
-        margin-top: 2rem;
-        padding: 0 1rem;
+        margin-top: 1.5rem;
+        padding: 0 0.5rem;
+        box-sizing: border-box;
     }
 
     .contact-item {
         flex-direction: row;
-        align-items: center;
-        gap: 0.75rem;
+        align-items: flex-start;
+        gap: 0.5rem;
         font-size: 0.95rem;
-        text-align: left;
+        margin-bottom: 0.75rem;
+        word-break: break-word;
+        line-height: 1.4;
     }
 
     .contact-item i {
         font-size: 1rem;
+        margin-top: 0.1rem;
     }
 
-    .request-content h1 {
-        font-size: 1.5rem;
+    .card-box {
+        width: 100% !important;
+        box-sizing: border-box;
+        padding: 1rem;
     }
 }
+
