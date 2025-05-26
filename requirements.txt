@@ -6,3 +6,5 @@ gspread
 oauth2client
 google-api-python-client
 gunicorn
+google-auth
+google-auth-oauthlib
