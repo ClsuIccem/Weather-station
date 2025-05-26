@@ -5,3 +5,4 @@ python-dotenv==1.0.0
 gspread
 oauth2client
 google-api-python-client
+gunicorn
