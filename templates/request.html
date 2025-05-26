@@ -17,9 +17,6 @@
             <a href="/sensor">WEATHER SENSOR</a>
             <a href="/request" class="active">REQUEST WEATHER DATA</a>
         </nav>
-        <div class="user-profile {% if logged_in %}logged-in{% endif %}" onclick="handleProfileClick()">
-            <img src="{{ url_for('static', filename='images/profile.svg') }}" alt="Profile">
-        </div>
     </header>
 
     <main>
