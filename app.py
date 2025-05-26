@@ -6,38 +6,39 @@ import json
 import gspread
 from google.oauth2 import service_account
 import base64
-from googleapiclient.discovery import build
-from google.oauth2.service_account import Credentials
-
 
 # Required scope for Google Sheets access
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-CREDENTIALS_FILE = 'weather-station-460903-972c4edd86f6.json'
 
+# Load credentials from base64 env variable or fallback to file
 try:
-    creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
+    credentials_b64 = os.getenv("GOOGLE_CREDENTIALS_B64")
+    if credentials_b64:
+        decoded = base64.b64decode(credentials_b64).decode("utf-8")
+        creds_json = json.loads(decoded)
+        creds = service_account.Credentials.from_service_account_info(creds_json, scopes=SCOPES)
+        print("✅ Loaded credentials from GOOGLE_CREDENTIALS_B64")
+    else:
+        CREDENTIALS_FILE = 'weather-station-460903-972c4edd86f6.json'
+        creds = service_account.Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
+        print("✅ Loaded credentials from file")
+
     client = gspread.authorize(creds)
-    print("✅ Google credentials loaded from file.")
+
 except Exception as e:
-    print(f"❌ Failed to load credentials: {e}")
+    print(f"❌ Failed to load Google Sheets credentials: {e}")
     creds = None
-
-
-
+    client = None
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)  # For session management
+app.secret_key = os.urandom(24)
 
 
 # Simulated weather data from Google Sheets
 def get_weather_data():
     try:
-        client = gspread.authorize(creds)
-
-        # Open the sheet
         sheet = client.open("filtered sensor data").sheet1
 
-        # Debug logs
         print("✅ Connected to Google Sheet.")
 
         temperature = float(sheet.acell('B1').value)
@@ -81,6 +82,7 @@ def get_condition(temp, humidity, pressure):
     else:
         return 'partly-cloudy'
 
+
 def get_forecast(current_temp, humidity, pressure):
     times = ['6:00 AM', '9:00 AM', '12:00 PM', '3:00 PM', '6:00 PM', '9:00 PM']
     temps = [
@@ -99,15 +101,14 @@ def get_forecast(current_temp, humidity, pressure):
         'condition': condition
     } for time, temp in zip(times, temps)]
 
+
 def get_weekly_forecast():
     try:
-        # Get current sensor values
         weather_data = get_weather_data()
         base_temp = weather_data['temperature']
         humidity = weather_data['humidity']
         pressure = weather_data['pressure']
     except:
-        # Fallback in case live data fails
         base_temp = 28
         humidity = 75
         pressure = 1010
@@ -118,12 +119,8 @@ def get_weekly_forecast():
     for i in range(7):
         day = 'Today' if i == 0 else (now + timedelta(days=i)).strftime('%A')
         date = (now + timedelta(days=i)).strftime('%b %d')
-
-        # Generate highs and lows based on base temp with variation
         high = round(base_temp + random.uniform(1, 3), 1)
         low = round(base_temp - random.uniform(1.5, 3), 1)
-
-        # Use your get_condition logic to simulate a weekly condition
         simulated_temp = base_temp + random.uniform(-2, 2)
         condition = get_condition(simulated_temp, humidity, pressure)
 
@@ -140,7 +137,7 @@ def get_weekly_forecast():
 
 def generate_sensor_data(parameter):
     now = datetime.now()
-    dates = [(now - timedelta(days=6-i)).strftime('%B %d, %Y') for i in range(7)]
+    dates = [(now - timedelta(days=6 - i)).strftime('%B %d, %Y') for i in range(7)]
 
     if parameter == 'temperature':
         base, variation, unit = 25, 8, '°C'
@@ -149,15 +146,14 @@ def generate_sensor_data(parameter):
     else:
         base, variation, unit = 1013, 25, 'hPa'
 
-    values = []
-    for _ in range(7):
-        values.extend([round(base + random.uniform(-variation, variation), 1) for _ in range(24)])
+    values = [round(base + random.uniform(-variation, variation), 1) for _ in range(7 * 24)]
 
     return {
         'labels': dates,
         'values': values,
         'parameter': f'{parameter.title()} ({unit})'
     }
+
 
 USERS = {"admin": "password123"}
 
@@ -179,6 +175,7 @@ def index():
                            forecast=forecast,
                            weekly=weekly,
                            logged_in='username' in session)
+
 
 @app.route('/dashboard')
 def dashboard():
@@ -205,21 +202,26 @@ def dashboard():
                            pm_forecast=pm_forecast,
                            weekly_forecast=weekly_forecast)
 
+
 @app.route('/sensor')
 def sensor():
     return render_template('sensor.html', logged_in='username' in session)
+
 
 @app.route('/api/sensor-data/<parameter>')
 def sensor_data(parameter):
     return jsonify(generate_sensor_data(parameter))
 
+
 @app.route('/api/weather')
 def get_weather():
     return jsonify(get_weather_data())
 
+
 @app.route('/request')
 def request_page():
     return render_template('request.html', logged_in='username' in session)
+
 
 @app.route('/api/submit-request', methods=['POST'])
 def submit_request():
@@ -227,11 +229,13 @@ def submit_request():
     print("Received request:", data)
     return jsonify({"status": "success"})
 
+
 @app.route('/login')
 def login():
     if 'username' in session:
         return redirect(url_for('index'))
     return render_template('login.html')
+
 
 @app.route('/api/login', methods=['POST'])
 def api_login():
@@ -244,10 +248,12 @@ def api_login():
         return jsonify({"status": "success"})
     return jsonify({"status": "error", "message": "Invalid credentials"}), 401
 
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
+
 
 @app.route('/admin')
 def admin():
@@ -264,47 +270,37 @@ def admin():
                            weekly=weekly,
                            logged_in=True)
 
-# Sensor pages
+
 @app.route('/air-temperature')
 def air_temperature():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    sensors = [
-        {'id': 1, 'name': 'Sensor A', 'location': 'Building 1'},
-        {'id': 2, 'name': 'Sensor B', 'location': 'Building 2'},
-        {'id': 3, 'name': 'Sensor C', 'location': 'Building 3'}
-    ]
+    sensors = [{'id': i, 'name': f'Sensor {chr(64+i)}', 'location': f'Building {i}'} for i in range(1, 4)]
     current_sensor_id = request.args.get('sensor', '1')
     current_sensor = next((s for s in sensors if str(s['id']) == current_sensor_id), sensors[0])
 
     return render_template('air_temperature.html', sensors=sensors, current_sensor=current_sensor)
+
 
 @app.route('/relative-humidity')
 def relative_humidity():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    sensors = [
-        {'id': 1, 'name': 'Sensor A', 'location': 'Building 1'},
-        {'id': 2, 'name': 'Sensor B', 'location': 'Building 2'},
-        {'id': 3, 'name': 'Sensor C', 'location': 'Building 3'}
-    ]
+    sensors = [{'id': i, 'name': f'Sensor {chr(64+i)}', 'location': f'Building {i}'} for i in range(1, 4)]
     current_sensor_id = request.args.get('sensor', '1')
     current_sensor = next((s for s in sensors if str(s['id']) == current_sensor_id), sensors[0])
 
     return render_template('relative_humidity.html', sensors=sensors, current_sensor=current_sensor)
+
 
 @app.route('/barometric-pressure')
 def barometric_pressure():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    sensors = [
-        {'id': 1, 'name': 'Sensor A', 'location': 'Building 1'},
-        {'id': 2, 'name': 'Sensor B', 'location': 'Building 2'},
-        {'id': 3, 'name': 'Sensor C', 'location': 'Building 3'}
-    ]
+    sensors = [{'id': i, 'name': f'Sensor {chr(64+i)}', 'location': f'Building {i}'} for i in range(1, 4)]
     current_sensor_id = request.args.get('sensor', '1')
     current_sensor = next((s for s in sensors if str(s['id']) == current_sensor_id), sensors[0])
 
@@ -314,10 +310,7 @@ def barometric_pressure():
 @app.route('/test-sheets')
 def test_sheets():
     try:
-        client = gspread.authorize(creds)
-        sheet = client.open("filtered sensor data").sheet1  # Same as get_weather_data()
-
-        # Example: Get first row (A1 to E1)
+        sheet = client.open("filtered sensor data").sheet1
         values = sheet.row_values(1)
         return jsonify(values)
     except Exception as e:
@@ -325,13 +318,6 @@ def test_sheets():
         return jsonify({'error': str(e)}), 500
 
 
-
-
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-
-
-
-
