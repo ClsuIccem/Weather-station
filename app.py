@@ -316,16 +316,16 @@ def barometric_pressure():
 @app.route('/test-sheets')
 def test_sheets():
     try:
-        service = build('sheets', 'v4', credentials=creds)
-        sheet = service.spreadsheets()
-        result = sheet.values().get(
-            spreadsheetId='1CxS4NrxiNc_XOSLd2850O1kSkdh_CFJGQov-Juu8hh4',
-            range='Sheet1!A1:E1'
-        ).execute()
-        values = result.get('values', [])
+        client = gspread.authorize(creds)
+        sheet = client.open("filtered sensor data").sheet1  # Same as get_weather_data()
+
+        # Example: Get first row (A1 to E1)
+        values = sheet.row_values(1)
         return jsonify(values)
     except Exception as e:
-        return f"Error fetching from Google Sheets: {e}", 500
+        print("❌ Error in /test-sheets:", e)
+        return jsonify({'error': str(e)}), 500
+
 
 
 
