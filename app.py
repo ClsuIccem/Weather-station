@@ -15,6 +15,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 # Decode base64 credentials and initialize Google service credentials
 try:
     creds_b64 = os.environ.get('GOOGLE_CREDENTIALS_B64')
+    print(f"✅ GOOGLE_CREDENTIALS_B64 present? {creds_b64 is not None}")
     if not creds_b64:
         raise Exception("Missing GOOGLE_CREDENTIALS_B64 environment variable")
     
