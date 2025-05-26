@@ -10,15 +10,13 @@ from googleapiclient.discovery import build
 
 
 # Define scopes required for Sheets API access (READ ONLY)
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+scope = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # Load credentials from JSON file directly
 try:
     CREDENTIALS_FILE = 'weather-station-460903-972c4edd86f6.json'
-    creds = service_account.Credentials.from_service_account_file(
-        CREDENTIALS_FILE,
-        scopes=SCOPES
-    )
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(google_creds, scope)
+
     print("✅ Google credentials loaded from file.")
 except Exception as e:
     print(f"❌ Failed to load credentials from file: {e}")
