@@ -16,7 +16,7 @@ scope = ["https://www.googleapis.com/auth/spreadsheets"]
 # Load credentials from JSON file directly
 try:
     CREDENTIALS_FILE = 'weather-station-460903-972c4edd86f6.json'
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(google_creds, scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
     client = gspread.authorize(creds)
 
     print("✅ Google credentials loaded from file.")
