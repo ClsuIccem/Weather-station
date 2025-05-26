@@ -3,17 +3,16 @@ from datetime import datetime, timedelta
 import random
 import os
 import json
-import google.auth
 import gspread
 from google.oauth2 import service_account
-
-
 
 # Load credentials from environment variable
 creds_json = os.environ.get('GOOGLE_CREDENTIALS')
 creds_dict = json.loads(creds_json)
 
-creds = service_account.Credentials.from_service_account_info(creds_dict)
+# Define scopes required for Sheets API access
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
@@ -23,7 +22,6 @@ def get_weather_data():
     try:
         # Setup
         client = gspread.authorize(creds)
-
 
         # Open the sheet
         sheet = client.open("filtered sensor data").sheet1
