@@ -7,21 +7,19 @@ import gspread
 from google.oauth2 import service_account
 import base64
 from googleapiclient.discovery import build
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 
 
-# Define scopes required for Sheets API access (READ ONLY)
-scope = ["https://www.googleapis.com/auth/spreadsheets"]
+# Required scope for Google Sheets access
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+CREDENTIALS_FILE = 'weather-station-460903-972c4edd86f6.json'
 
-# Load credentials from JSON file directly
 try:
-    CREDENTIALS_FILE = 'weather-station-460903-972c4edd86f6.json'
-    creds = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
+    creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
     client = gspread.authorize(creds)
-
     print("✅ Google credentials loaded from file.")
 except Exception as e:
-    print(f"❌ Failed to load credentials from file: {e}")
+    print(f"❌ Failed to load credentials: {e}")
     creds = None
 
 
