@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: weather-station
+    name: ClsuWeather
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python app.py
