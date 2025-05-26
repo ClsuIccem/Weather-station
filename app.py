@@ -3,37 +3,52 @@ from datetime import datetime, timedelta
 import random
 import os
 import json
-import google.auth
 import gspread
 from google.oauth2 import service_account
+import base64
+from googleapiclient.discovery import build
+
+
+# Define scopes required for Sheets API access (READ ONLY)
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+
+# Load credentials from JSON file directly
+try:
+    CREDENTIALS_FILE = 'weather-station-460903-b0b8c0a316c2.json'
+    creds = service_account.Credentials.from_service_account_file(
+        CREDENTIALS_FILE,
+        scopes=SCOPES
+    )
+    print("✅ Google credentials loaded from file.")
+except Exception as e:
+    print(f"❌ Failed to load credentials from file: {e}")
+    creds = None
 
 
 
-# Load credentials from environment variable
-creds_json = os.environ.get('GOOGLE_CREDENTIALS')
-creds_dict = json.loads(creds_json)
-
-creds = service_account.Credentials.from_service_account_info(creds_dict)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
 
+
 # Simulated weather data from Google Sheets
 def get_weather_data():
     try:
-        # Setup
         client = gspread.authorize(creds)
-
 
         # Open the sheet
         sheet = client.open("filtered sensor data").sheet1
 
-        # Fetch live sensor values
+        # Debug logs
+        print("✅ Connected to Google Sheet.")
+
         temperature = float(sheet.acell('B1').value)
         humidity = float(sheet.acell('C1').value)
         pressure = float(sheet.acell('E1').value)
         hindex = float(sheet.acell('D1').value)
         datetime_val = sheet.acell('A1').value
+
+        print(f"📊 Read data: {temperature}°C, {humidity}%, {pressure} hPa")
 
         return {
             'temperature': temperature,
@@ -45,7 +60,7 @@ def get_weather_data():
         }
 
     except Exception as e:
-        print("Error fetching from Google Sheets:", e)
+        print("❌ Error fetching from Google Sheets:", e)
         return {
             'temperature': 0,
             'humidity': 0,
@@ -54,6 +69,7 @@ def get_weather_data():
             'datetime': 'N/A',
             'unit': 'celsius'
         }
+
 
 def get_condition(temp, humidity, pressure):
     if pressure < 1005 and humidity > 75:
@@ -295,6 +311,23 @@ def barometric_pressure():
     current_sensor = next((s for s in sensors if str(s['id']) == current_sensor_id), sensors[0])
 
     return render_template('barometric_pressure.html', sensors=sensors, current_sensor=current_sensor)
+
+
+@app.route('/test-sheets')
+def test_sheets():
+    try:
+        service = build('sheets', 'v4', credentials=creds)
+        sheet = service.spreadsheets()
+        result = sheet.values().get(
+            spreadsheetId='1CxS4NrxiNc_XOSLd2850O1kSkdh_CFJGQov-Juu8hh4',
+            range='Sheet1!A1:E1'
+        ).execute()
+        values = result.get('values', [])
+        return jsonify(values)
+    except Exception as e:
+        return f"Error fetching from Google Sheets: {e}", 500
+
+
 
 if __name__ == '__main__':
     import os
