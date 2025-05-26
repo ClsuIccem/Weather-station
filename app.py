@@ -11,7 +11,7 @@ creds_json = os.environ.get('GOOGLE_CREDENTIALS')
 creds_dict = json.loads(creds_json)
 
 # Define scopes required for Sheets API access
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
 
 app = Flask(__name__)
