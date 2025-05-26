@@ -21,19 +21,19 @@ app.secret_key = os.urandom(24)  # For session management
 # Simulated weather data from Google Sheets
 def get_weather_data():
     try:
-        # Setup
         client = gspread.authorize(creds)
-
-
-        # Open the sheet
         sheet = client.open("filtered sensor data").sheet1
 
-        # Fetch live sensor values
+        # Debug logs
+        print("✅ Connected to Google Sheet.")
+
         temperature = float(sheet.acell('B1').value)
         humidity = float(sheet.acell('C1').value)
         pressure = float(sheet.acell('E1').value)
         hindex = float(sheet.acell('D1').value)
         datetime_val = sheet.acell('A1').value
+
+        print(f"📊 Read data: {temperature}°C, {humidity}%, {pressure} hPa")
 
         return {
             'temperature': temperature,
@@ -45,7 +45,7 @@ def get_weather_data():
         }
 
     except Exception as e:
-        print("Error fetching from Google Sheets:", e)
+        print("❌ Error fetching from Google Sheets:", e)
         return {
             'temperature': 0,
             'humidity': 0,
@@ -54,6 +54,7 @@ def get_weather_data():
             'datetime': 'N/A',
             'unit': 'celsius'
         }
+
 
 def get_condition(temp, humidity, pressure):
     if pressure < 1005 and humidity > 75:
