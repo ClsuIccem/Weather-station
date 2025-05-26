@@ -298,6 +298,30 @@ def barometric_pressure():
 
     return render_template('barometric_pressure.html', sensors=sensors, current_sensor=current_sensor)
 
+
+@app.route('/test-sheets')
+def test_sheets():
+    try:
+        creds = service_account.Credentials.from_service_account_info(
+            json.loads(os.environ['GOOGLE_CREDENTIALS']),
+            scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
+        )
+
+        service = build('sheets', 'v4', credentials=creds)
+        sheet = service.spreadsheets()
+
+        # Replace with your actual Spreadsheet ID and Range
+        spreadsheet_id = '1CxS4NrxiNc_XOSLd2850O1kSkdh_CFJGQov-Juu8hh4'
+        range_name = 'Sheet1!A1:E1'
+
+        result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+        values = result.get('values', [])
+
+        return {'status': 'success', 'data': values}
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}
+
+
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
