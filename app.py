@@ -6,16 +6,21 @@ import json
 import gspread
 from google.oauth2 import service_account
 
-# Load credentials from environment variable
-creds_json = os.environ.get('GOOGLE_CREDENTIALS')
-creds_dict = json.loads(creds_json)
+# Define scopes required for Sheets API access (READ ONLY)
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
-# Define scopes required for Sheets API access
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+# Load credentials from environment variable
+try:
+    creds_json = os.environ.get('GOOGLE_CREDENTIALS')
+    creds_dict = json.loads(creds_json)
+    creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+except Exception as e:
+    print(f"Failed to load credentials: {e}")
+    creds = None  # This prevents app crash if credentials are bad
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
+
 
 # Simulated weather data from Google Sheets
 def get_weather_data():
@@ -302,24 +307,17 @@ def barometric_pressure():
 @app.route('/test-sheets')
 def test_sheets():
     try:
-        creds = service_account.Credentials.from_service_account_info(
-            json.loads(os.environ['GOOGLE_CREDENTIALS']),
-            scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
-        )
-
         service = build('sheets', 'v4', credentials=creds)
         sheet = service.spreadsheets()
-
-        # Replace with your actual Spreadsheet ID and Range
-        spreadsheet_id = '1CxS4NrxiNc_XOSLd2850O1kSkdh_CFJGQov-Juu8hh4'
-        range_name = 'Sheet1!A1:E1'
-
-        result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+        result = sheet.values().get(
+            spreadsheetId='1CxS4NrxiNc_XOSLd2850O1kSkdh_CFJGQov-Juu8hh4',
+            range='Sheet1!A1:E1'
+        ).execute()
         values = result.get('values', [])
-
-        return {'status': 'success', 'data': values}
+        return jsonify(values)
     except Exception as e:
-        return {'status': 'error', 'message': str(e)}
+        return f"Error fetching from Google Sheets: {e}", 500
+
 
 
 if __name__ == '__main__':
