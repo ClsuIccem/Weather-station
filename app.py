@@ -5,18 +5,26 @@ import os
 import json
 import gspread
 from google.oauth2 import service_account
+import base64
+
 
 # Define scopes required for Sheets API access (READ ONLY)
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
-# Load credentials from environment variable
+# Decode base64 credentials and initialize Google service credentials
 try:
-    creds_json = os.environ.get('GOOGLE_CREDENTIALS')
+    creds_b64 = os.environ.get('GOOGLE_CREDENTIALS_B64')
+    if not creds_b64:
+        raise Exception("Missing GOOGLE_CREDENTIALS_B64 environment variable")
+    
+    creds_json = base64.b64decode(creds_b64).decode('utf-8')
     creds_dict = json.loads(creds_json)
     creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+    print("✅ Google credentials loaded successfully.")
 except Exception as e:
-    print(f"Failed to load credentials: {e}")
-    creds = None  # This prevents app crash if credentials are bad
+    print(f"❌ Failed to load credentials: {e}")
+    creds = None
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
