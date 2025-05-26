@@ -298,6 +298,7 @@ main {
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
+     flex-wrap: wrap;
 }
 
 .tab-btn {
@@ -582,6 +583,16 @@ main {
 
     .weather-card .value {
         font-size: 2rem;
+    }
+
+    .sensor-tabs {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tab-btn {
+        width: 100%;
+        text-align: center;
     }
 }
 
