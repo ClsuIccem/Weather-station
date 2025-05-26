@@ -1,53 +1,27 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from datetime import datetime, timedelta
-from google.oauth2 import service_account
 import random
 import os
-import json
-import gspread
-import base64
-
-# Required scope for Google Sheets access
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-# Load credentials from base64 env variable or fallback to file
-try:
-    credentials_b64 = os.getenv("GOOGLE_CREDENTIALS_B64")
-    if credentials_b64:
-        decoded = base64.b64decode(credentials_b64).decode("utf-8")
-        creds_json = json.loads(decoded)
-        creds = service_account.Credentials.from_service_account_info(creds_json, scopes=SCOPES)
-        print("✅ Loaded credentials from GOOGLE_CREDENTIALS_B64")
-    else:
-        CREDENTIALS_FILE = 'weather-station-460903-972c4edd86f6.json'
-        creds = service_account.Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
-        print("✅ Loaded credentials from file")
-
-    client = gspread.authorize(creds)
-
-except Exception as e:
-    print(f"❌ Failed to load Google Sheets credentials: {e}")
-    creds = None
-    client = None
+import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+# Public CSV URL
+CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1Rc7g9UYXWLOD-lezGk7F5jCbY2Cm_GMxFtVzBafV1SiH3mmLh_4XjXnF2tU7lDR1vZI4CT-Xe9e6/pub?gid=0&single=true&output=csv"
 
-# Simulated weather data from Google Sheets
+# Read weather data from the public CSV
 def get_weather_data():
     try:
-        sheet = client.open("filtered sensor data").sheet1
+        df = pd.read_csv(CSV_URL, header=None)  # Tell pandas not to expect headers
 
-        print("✅ Connected to Google Sheet.")
+        datetime_val = df.iloc[0][0]  # Column A
+        temperature = float(df.iloc[0][1])  # Column B
+        humidity = float(df.iloc[0][2])  # Column C
+        hindex = float(df.iloc[0][3])  # Column D
+        pressure = 1013  # You can hardcode or fetch it elsewhere
 
-        temperature = float(sheet.acell('B1').value)
-        humidity = float(sheet.acell('C1').value)
-        pressure = float(sheet.acell('E1').value)
-        hindex = float(sheet.acell('D1').value)
-        datetime_val = sheet.acell('A1').value
-
-        print(f"📊 Read data: {temperature}°C, {humidity}%, {pressure} hPa")
+        print(f"📊 CSV Data: {temperature}°C, {humidity}%, HI: {hindex}, Time: {datetime_val}")
 
         return {
             'temperature': temperature,
@@ -59,7 +33,7 @@ def get_weather_data():
         }
 
     except Exception as e:
-        print("❌ Error fetching from Google Sheets:", e)
+        print("❌ Error reading from CSV:", e)
         return {
             'temperature': 0,
             'humidity': 0,
