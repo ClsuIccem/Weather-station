@@ -1,14 +1,14 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from datetime import datetime, timedelta
+from google.oauth2 import service_account
 import random
 import os
 import json
 import gspread
-from google.oauth2 import service_account
 import base64
 
 # Required scope for Google Sheets access
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # Load credentials from base64 env variable or fallback to file
 try:
