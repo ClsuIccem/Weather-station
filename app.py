@@ -19,17 +19,19 @@ def get_weather_data():
         temperature = float(df.iloc[0][1])  # Column B
         humidity = float(df.iloc[0][2])  # Column C
         hindex = float(df.iloc[0][3])  # Column D
-        pressure = float(df.iloc[0][5])
+        pressure_pa = float(df.iloc[0][5])  # Column F (in Pascals)
+        pressure_mb = pressure_pa / 100  # Convert to millibars (or hPa)
 
-        print(f"📊 CSV Data: {temperature}°C, {humidity}%, HI: {hindex}, Time: {datetime_val}")
+        print(f"📊 CSV Data: {temperature}°C, {humidity}%, HI: {hindex}, Pressure: {pressure_mb} mb, Time: {datetime_val}")
 
         return {
             'temperature': temperature,
             'humidity': humidity,
-            'pressure': pressure,
+            'pressure': round(pressure_mb, 2),  # Rounded for better display
             'hindex': hindex,
             'datetime': datetime_val,
-            'unit': 'celsius'
+            'unit': 'celsius',
+            'pressure_unit': 'mb'
         }
 
     except Exception as e:
