@@ -19,7 +19,7 @@ def get_weather_data():
         temperature = float(df.iloc[0][1])  # Column B
         humidity = float(df.iloc[0][2])  # Column C
         hindex = float(df.iloc[0][3])  # Column D
-        pressure = 1013  # You can hardcode or fetch it elsewhere
+        pressure = float(df.iloc[0][5])
 
         print(f"📊 CSV Data: {temperature}°C, {humidity}%, HI: {hindex}, Time: {datetime_val}")
 
